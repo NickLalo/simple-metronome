@@ -77,7 +77,7 @@
             <button id="random-button" class="text-button" type="button">
               Random tempo <kbd class="shortcut">R</kbd>
             </button>
-            <div class="tooltip-trigger">
+            <div id="practice-tooltip-trigger" class="tooltip-trigger">
               <button
                 id="practice-button"
                 class="text-button"
@@ -87,6 +87,10 @@
                 Practice mode <kbd class="shortcut">P</kbd>
               </button>
               <div id="practice-tooltip" class="practice-tooltip" role="tooltip">
+                <svg class="practice-tooltip-timer" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle class="practice-tooltip-timer-track" cx="12" cy="12" r="9" pathLength="1" />
+                  <circle class="practice-tooltip-timer-progress" cx="12" cy="12" r="9" pathLength="1" />
+                </svg>
                 Starts at 80 BPM with the accent off, then adds 3 BPM every 4 bars until 160. Stopping
                 resets to 80 BPM.
               </div>

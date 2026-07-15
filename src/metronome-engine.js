@@ -2,12 +2,14 @@ import {
   Loop,
   Sampler,
   getDestination,
+  getContext,
   getDraw,
   getTransport,
   loaded,
   start as startAudio,
 } from "tone";
 import clickUrl from "./assets/metronome-click.mp3?url";
+import { configureAudioSessionForPlayback } from "./audio-session.js";
 import { TempoRamp, clampInteger } from "./tempo.js";
 
 const noop = () => {};
@@ -63,8 +65,6 @@ export class MetronomeEngine {
   }
 
   async #createAudioGraph() {
-    await startAudio();
-
     getDestination().volume.value = -6;
     this.#sampler = new Sampler({
       urls: { C3: clickUrl },
@@ -84,6 +84,7 @@ export class MetronomeEngine {
       return;
     }
 
+    await this.#resumeAudioContext();
     await this.initialize();
     this.#beatIndex = 0;
     this.#ramp.reset();
@@ -92,6 +93,21 @@ export class MetronomeEngine {
     this.transport.start();
     this.isPlaying = true;
     this.onPlayingChange(true);
+  }
+
+  async #resumeAudioContext() {
+    configureAudioSessionForPlayback();
+
+    const context = getContext();
+    await startAudio();
+
+    if (context.state !== "running") {
+      await context.resume();
+    }
+
+    if (context.state !== "running") {
+      throw new Error(`Audio context could not be started (state: ${context.state})`);
+    }
   }
 
   stop() {
@@ -182,9 +198,16 @@ export class MetronomeEngine {
     const isAccentedBeat = this.accent && this.#beatIndex === 0;
     const notes = isAccentedBeat ? ["C3", "E3", "G3"] : "C3";
     const velocity = isAccentedBeat ? 1 : 0.8;
+    const tempoChange = this.#beatIndex === 0 ? this.#ramp.beginBar() : null;
 
     this.#sampler.triggerAttackRelease(notes, "16n", time, velocity);
-    getDraw().schedule(() => this.onBeat(beatNumber, this.beatsPerBar), time);
+    getDraw().schedule(() => {
+      if (tempoChange !== null && this.tempo === tempoChange) {
+        this.onTempoChange(tempoChange, "target");
+      }
+
+      this.onBeat(beatNumber, this.beatsPerBar);
+    }, time);
 
     this.#beatIndex += 1;
     if (this.#beatIndex < this.beatsPerBar) {
@@ -199,6 +222,5 @@ export class MetronomeEngine {
 
     this.tempo = nextTempo;
     this.transport.bpm.value = nextTempo;
-    getDraw().schedule(() => this.onTempoChange(nextTempo, "target"), time);
   }
 }

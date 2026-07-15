@@ -5,6 +5,7 @@ import { TapTempo, clampInteger } from "./tempo.js";
 const TEMPO_MIN = 40;
 const TEMPO_MAX = 240;
 const TEMPO_ENTRY_IDLE_MS = 2_000;
+const PRACTICE_TOOLTIP_TIMEOUT_MS = 5_000;
 
 function byId(id) {
   const element = document.getElementById(id);
@@ -23,6 +24,7 @@ const elements = {
   gainSlider: byId("gain-slider"),
   increaseInput: byId("increase-input"),
   practiceButton: byId("practice-button"),
+  practiceTooltipTrigger: byId("practice-tooltip-trigger"),
   randomButton: byId("random-button"),
   shortcutGuide: byId("shortcut-guide"),
   shortcutsToggle: byId("shortcuts-toggle"),
@@ -38,6 +40,7 @@ const elements = {
 };
 
 const tapTempo = new TapTempo({ minimum: TEMPO_MIN, maximum: TEMPO_MAX });
+let practiceTooltipTimeoutId = null;
 let tempoEntryTimeoutId = null;
 const engine = new MetronomeEngine({
   tempo: Number(elements.tempoInput.value),
@@ -108,6 +111,32 @@ function scheduleTempoEntryTimeout() {
 function finishTempoEntry() {
   clearTempoEntryTimeout();
   elements.tempoInput.blur();
+}
+
+function clearPracticeTooltipTimeout() {
+  if (practiceTooltipTimeoutId === null) {
+    return;
+  }
+
+  window.clearTimeout(practiceTooltipTimeoutId);
+  practiceTooltipTimeoutId = null;
+}
+
+function schedulePracticeTooltipDismissal() {
+  clearPracticeTooltipTimeout();
+  elements.practiceTooltipTrigger.classList.remove("is-counting", "is-dismissed");
+  void elements.practiceTooltipTrigger.offsetWidth;
+  elements.practiceTooltipTrigger.classList.add("is-counting");
+  practiceTooltipTimeoutId = window.setTimeout(() => {
+    practiceTooltipTimeoutId = null;
+    elements.practiceTooltipTrigger.classList.remove("is-counting");
+    elements.practiceTooltipTrigger.classList.add("is-dismissed");
+    elements.practiceButton.blur();
+  }, PRACTICE_TOOLTIP_TIMEOUT_MS);
+}
+
+function restorePracticeTooltip() {
+  elements.practiceTooltipTrigger.classList.remove("is-dismissed");
 }
 
 function renderBeatIndicator(beatsPerBar) {
@@ -242,7 +271,12 @@ elements.startButton.addEventListener("click", togglePlayback);
 elements.tapButton.addEventListener("click", recordTap);
 elements.tapButton.addEventListener("animationend", () => elements.tapButton.classList.remove("is-tapped"));
 elements.randomButton.addEventListener("click", setRandomTempo);
-elements.practiceButton.addEventListener("click", startPracticeMode);
+elements.practiceButton.addEventListener("click", () => {
+  schedulePracticeTooltipDismissal();
+  startPracticeMode();
+});
+elements.practiceTooltipTrigger.addEventListener("pointerenter", restorePracticeTooltip);
+elements.practiceTooltipTrigger.addEventListener("focusin", restorePracticeTooltip);
 
 elements.tempoInput.addEventListener("focus", scheduleTempoEntryTimeout);
 elements.tempoInput.addEventListener("input", () => {
@@ -314,6 +348,13 @@ elements.gainSlider.addEventListener("input", () => {
 elements.gainSlider.addEventListener("change", () => {
   setStatus(engine.gain === -36 ? "Metronome muted" : `Gain set to ${engine.gain} dB`);
 });
+elements.gainSlider.addEventListener("dblclick", () => {
+  const gain = engine.setGain(0);
+  elements.gainInput.value = String(gain);
+  elements.gainSlider.value = String(gain);
+  setSliderFill(elements.gainSlider);
+  setStatus("Gain reset to 0 dB");
+});
 
 addRangeWheelControl(elements.tempoSlider, (value) => updateTempo(value));
 addRangeWheelControl(elements.gainSlider, (value) => {
@@ -372,6 +413,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("beforeunload", () => {
+  clearPracticeTooltipTimeout();
   clearTempoEntryTimeout();
   engine.dispose();
 });

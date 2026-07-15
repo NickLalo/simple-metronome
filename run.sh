@@ -22,4 +22,22 @@ if ! command -v node >/dev/null 2>&1 || [[ "$(command -v node)" == /mnt/c/* ]]; 
   exit 1
 fi
 
-exec npm run dev -- "$@"
+open_browser=true
+vite_args=()
+
+for argument in "$@"; do
+  case "$argument" in
+    -n|--no-browser)
+      open_browser=false
+      ;;
+    *)
+      vite_args+=("$argument")
+      ;;
+  esac
+done
+
+if [[ "$open_browser" == true ]]; then
+  vite_args=(--open "${vite_args[@]}")
+fi
+
+exec npm run dev -- "${vite_args[@]}"

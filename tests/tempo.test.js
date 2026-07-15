@@ -32,8 +32,20 @@ test("TempoRamp changes tempo after exactly the configured number of bars", () =
 
   assert.equal(ramp.completeBar(100), null);
   assert.equal(ramp.completeBar(100), 104);
+  assert.equal(ramp.beginBar(), 104);
+  assert.equal(ramp.beginBar(), null);
   assert.equal(ramp.completeBar(104), null);
   assert.equal(ramp.completeBar(104), 108);
+  assert.equal(ramp.beginBar(), 108);
+});
+
+test("TempoRamp exposes a completed change at the beginning of the next bar", () => {
+  const ramp = new TempoRamp({ enabled: true, target: 112, step: 4, barsPerChange: 1 });
+
+  assert.equal(ramp.beginBar(), null);
+  assert.equal(ramp.completeBar(100), 104);
+  assert.equal(ramp.beginBar(), 104);
+  assert.equal(ramp.beginBar(), null);
 });
 
 test("TempoRamp stops exactly at the target", () => {
@@ -51,4 +63,5 @@ test("TempoRamp resets its bar count when toggled", () => {
   ramp.configure({ enabled: true, target: 120, step: 4, barsPerChange: 2 });
   assert.equal(ramp.completeBar(100), null);
   assert.equal(ramp.completeBar(100), 104);
+  assert.equal(ramp.beginBar(), 104);
 });

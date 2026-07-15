@@ -38,6 +38,8 @@ export class TapTempo {
 }
 
 export class TempoRamp {
+  #pendingTempoChange = null;
+
   constructor({ enabled = false, target = 144, step = 4, barsPerChange = 2 } = {}) {
     this.enabled = enabled;
     this.target = target;
@@ -68,10 +70,18 @@ export class TempoRamp {
     }
 
     this.completedBars = 0;
-    return Math.min(this.target, currentTempo + this.step);
+    this.#pendingTempoChange = Math.min(this.target, currentTempo + this.step);
+    return this.#pendingTempoChange;
+  }
+
+  beginBar() {
+    const tempoChange = this.#pendingTempoChange;
+    this.#pendingTempoChange = null;
+    return tempoChange;
   }
 
   reset() {
     this.completedBars = 0;
+    this.#pendingTempoChange = null;
   }
 }

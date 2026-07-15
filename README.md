@@ -2,7 +2,9 @@
 
 A focused browser metronome for music practice. It includes tap tempo, configurable accents and time signatures, keyboard control, and a target-tempo mode that gradually increases the pace as you practice.
 
-**[check out the simple metronome here](https://nicklalo.github.io/simple-metronome/)**
+<p align="center">
+  <a href="https://nicklalo.github.io/simple-metronome/"><strong>Explore the simple metronome in your browser →</strong></a>
+</p>
 
 The app is built with vanilla JavaScript, [Tone.js](https://tonejs.github.io/), and [Vite](https://vite.dev/). It runs entirely in the browser—there is no backend or user data collection.
 
@@ -19,7 +21,14 @@ You need [Node.js](https://nodejs.org/) 22.12 or newer. From a fresh clone, inst
 
 On later runs, you only need `./run.sh`. The launcher also detects missing or outdated dependencies and runs the installer automatically, so using `./install_dependencies.sh` explicitly is optional.
 
-Vite opens the app in your default browser and reloads it when files change. You can pass Vite options through the launcher, for example `./run.sh --host 0.0.0.0`.
+By default, `./run.sh` opens the app in your browser and reloads it when files change. To start the server without opening a browser, use either form:
+
+```bash
+./run.sh -n
+./run.sh --no-browser
+```
+
+You can combine these with other Vite options, for example `./run.sh -n --host 0.0.0.0`.
 
 ## Features
 
@@ -57,8 +66,9 @@ That command runs ESLint, the unit tests, and a production build.
 | Command | Purpose |
 | --- | --- |
 | `./install_dependencies.sh` | Select Node and install exactly the locked dependencies |
-| `./run.sh` | Select Node, install dependencies if needed, and start the app |
-| `npm run dev` | Start the local development server |
+| `./run.sh` | Select Node, install dependencies if needed, start the app, and open it in a browser |
+| `./run.sh -n` or `./run.sh --no-browser` | Start the app without opening a browser |
+| `npm run dev` | Start the local development server without opening a browser |
 | `npm run build` | Create the production site in `dist/` |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Check JavaScript quality rules |

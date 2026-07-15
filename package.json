@@ -5,7 +5,7 @@
   "description": "A focused browser metronome with tap tempo and progressive practice modes.",
   "type": "module",
   "scripts": {
-    "dev": "vite --open",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --open",
     "lint": "eslint .",
