@@ -2,7 +2,7 @@
 
 A focused browser metronome for music practice. It includes tap tempo, configurable accents and time signatures, keyboard control, and a target-tempo mode that gradually increases the pace as you practice.
 
-**[Open the Simple Metronome](https://nicklalo.github.io/simple-metronome/)**
+**[check out the simple metronome here](https://nicklalo.github.io/simple-metronome/)**
 
 The app is built with vanilla JavaScript, [Tone.js](https://tonejs.github.io/), and [Vite](https://vite.dev/). It runs entirely in the browser—there is no backend or user data collection.
 
@@ -91,29 +91,3 @@ Keyboard shortcuts pause while a form control is focused. Press <kbd>Escape</kbd
 Target-tempo mode increases the tempo after the configured number of completed bars until it reaches the target. The starting tempo is restored when playback stops, making it easy to repeat the same practice run.
 
 The default configuration increases the tempo by 4 BPM every 2 bars until it reaches 144 BPM.
-
-## Deploy to GitHub Pages
-
-The repository includes a GitHub Actions workflow that checks and builds the app before publishing it.
-
-1. Push the repository to GitHub with `main` as the default branch.
-2. Open **Settings → Pages** in the repository.
-3. Set **Source** to **GitHub Actions**.
-4. Push to `main` or run the **Deploy to GitHub Pages** workflow manually.
-
-Vite uses relative production asset paths, so the site works from a project URL such as `https://username.github.io/simple-metronome/` without repository-specific configuration.
-
-## Project structure
-
-```text
-src/
-  assets/              Audio sample used by the metronome
-  main.js              UI state and browser interactions
-  metronome-engine.js  Tone.js scheduling and playback
-  styles.css           Responsive visual design
-  tempo.js             Pure tempo and target-ramp logic
-tests/                  Unit tests for tempo calculations
-public/                 Static favicon and documentation image
-```
-
-This project began as a local Flask application and was later simplified into a fully static browser app. Its visual direction was inspired by the straightforward, high-contrast controls of dedicated practice metronomes.
