@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A focused browser metronome with tap tempo, accents, keyboard shortcuts, and progressive practice modes."
+    />
+    <meta name="theme-color" content="#d8d0c9" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="./images/metronome-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <title>Simple Metronome</title>
+  </head>
+  <body>
+    <main class="page-shell">
+      <fieldset class="metronome" aria-describedby="app-status">
+        <legend>Metronome</legend>
+
+        <section class="tempo-panel" aria-labelledby="tempo-heading">
+          <h1 id="tempo-heading" class="sr-only">Tempo controls</h1>
+
+          <div id="beat-indicator" class="beat-indicator" aria-hidden="true"></div>
+
+          <div class="tempo-grid">
+            <button class="step-button" type="button" data-tempo-step="-1">
+              <span>−1</span><kbd class="shortcut">A</kbd>
+            </button>
+
+            <label class="tempo-display" for="tempo-input">
+              <span class="sr-only">Tempo in beats per minute</span>
+              <input
+                id="tempo-input"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                value="112"
+                aria-describedby="tempo-unit"
+                autocomplete="off"
+              />
+              <span id="tempo-unit">BPM</span>
+              <kbd class="shortcut">0–9</kbd>
+            </label>
+
+            <button class="step-button" type="button" data-tempo-step="1">
+              <span>+1</span><kbd class="shortcut">D</kbd>
+            </button>
+
+            <button class="step-button" type="button" data-tempo-step="-5">
+              <span>−5</span><kbd class="shortcut">S</kbd>
+            </button>
+
+            <div class="tempo-spacer" aria-hidden="true"></div>
+
+            <button class="step-button" type="button" data-tempo-step="5">
+              <span>+5</span><kbd class="shortcut">W</kbd>
+            </button>
+          </div>
+
+          <label class="range-control tempo-range" for="tempo-slider">
+            <span class="sr-only">Tempo</span>
+            <input id="tempo-slider" type="range" min="40" max="240" value="112" />
+          </label>
+
+          <div class="primary-actions">
+            <button id="start-button" class="action-button start-button" type="button" aria-pressed="false">
+              <span class="button-label">Start</span><kbd class="shortcut">Space</kbd>
+            </button>
+            <button id="tap-button" class="action-button tap-button" type="button">
+              <span>Tap</span><kbd class="shortcut">T</kbd>
+            </button>
+          </div>
+
+          <div class="practice-actions" aria-label="Practice tools">
+            <button id="random-button" class="text-button" type="button">
+              Random tempo <kbd class="shortcut">R</kbd>
+            </button>
+            <div class="tooltip-trigger">
+              <button
+                id="practice-button"
+                class="text-button"
+                type="button"
+                aria-describedby="practice-tooltip"
+              >
+                Practice mode <kbd class="shortcut">P</kbd>
+              </button>
+              <div id="practice-tooltip" class="practice-tooltip" role="tooltip">
+                Starts at 80 BPM with the accent off, then adds 3 BPM every 4 bars until 160. Stopping
+                resets to 80 BPM.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-panel" aria-labelledby="settings-heading">
+          <h2 id="settings-heading" class="sr-only">Metronome settings</h2>
+
+          <div class="setting-row">
+            <label for="beats-input">Beats per bar</label>
+            <span class="input-with-shortcut">
+              <input id="beats-input" type="number" min="1" max="15" value="4" inputmode="numeric" />
+              <kbd class="shortcut">B</kbd>
+            </span>
+          </div>
+
+          <label class="setting-row switch-row" for="accent-toggle">
+            <span>Accent first beat</span>
+            <span class="switch-control">
+              <kbd class="shortcut">E</kbd>
+              <input id="accent-toggle" class="toggle" type="checkbox" checked />
+            </span>
+          </label>
+
+          <label class="setting-row switch-row" for="shortcuts-toggle">
+            <span>Show shortcuts</span>
+            <span class="switch-control">
+              <kbd class="shortcut shortcut-always">H</kbd>
+              <input id="shortcuts-toggle" class="toggle" type="checkbox" />
+            </span>
+          </label>
+
+          <label class="setting-row switch-row" for="target-toggle">
+            <span>Target tempo</span>
+            <span class="switch-control">
+              <kbd class="shortcut">Y</kbd>
+              <input id="target-toggle" class="toggle" type="checkbox" aria-controls="target-settings" />
+            </span>
+          </label>
+
+          <fieldset id="target-settings" class="target-settings" disabled>
+            <legend class="sr-only">Target tempo settings</legend>
+
+            <label for="target-input">
+              <span>Target BPM</span>
+              <input id="target-input" type="number" min="40" max="240" value="144" inputmode="numeric" />
+            </label>
+
+            <div class="target-step-row">
+              <label for="increase-input">
+                <span>Increase by</span>
+                <input id="increase-input" type="number" min="1" max="30" value="4" inputmode="numeric" />
+              </label>
+              <label for="bars-input">
+                <span>Every</span>
+                <span class="unit-input">
+                  <input id="bars-input" type="number" min="1" max="16" value="2" inputmode="numeric" />
+                  <span>bars</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="gain-control">
+            <div class="setting-row gain-label-row">
+              <label for="gain-input">Gain</label>
+              <span class="input-with-unit">
+                <input id="gain-input" type="number" min="-36" max="18" value="0" inputmode="numeric" />
+                <span>dB</span>
+                <kbd class="shortcut">G</kbd>
+              </span>
+            </div>
+            <label class="range-control" for="gain-slider">
+              <span class="sr-only">Gain</span>
+              <input id="gain-slider" type="range" min="-36" max="18" value="0" />
+            </label>
+          </div>
+        </section>
+
+        <section id="shortcut-guide" class="shortcut-guide" aria-labelledby="shortcut-heading" hidden>
+          <h2 id="shortcut-heading">Keyboard shortcuts</h2>
+          <dl>
+            <div><dt><kbd>Space</kbd></dt><dd>Start or stop</dd></div>
+            <div><dt><kbd>T</kbd></dt><dd>Tap tempo</dd></div>
+            <div><dt><kbd>A</kbd> / <kbd>←</kbd></dt><dd>−1 BPM</dd></div>
+            <div><dt><kbd>D</kbd> / <kbd>→</kbd></dt><dd>+1 BPM</dd></div>
+            <div><dt><kbd>S</kbd> / <kbd>↓</kbd></dt><dd>−5 BPM</dd></div>
+            <div><dt><kbd>W</kbd> / <kbd>↑</kbd></dt><dd>+5 BPM</dd></div>
+            <div><dt><kbd>E</kbd></dt><dd>Toggle accent</dd></div>
+            <div><dt><kbd>Y</kbd></dt><dd>Toggle target</dd></div>
+            <div><dt><kbd>R</kbd></dt><dd>Random tempo</dd></div>
+            <div><dt><kbd>P</kbd></dt><dd>Practice mode</dd></div>
+          </dl>
+        </section>
+      </fieldset>
+
+      <p id="app-status" class="status" role="status" aria-live="polite">Ready</p>
+      <noscript>This metronome needs JavaScript enabled to run.</noscript>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
