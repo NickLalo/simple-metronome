@@ -2,6 +2,8 @@
 
 A focused browser metronome for music practice. It includes tap tempo, configurable accents and time signatures, keyboard control, and a target-tempo mode that gradually increases the pace as you practice.
 
+**[Open the Simple Metronome](https://nicklalo.github.io/simple-metronome/)**
+
 The app is built with vanilla JavaScript, [Tone.js](https://tonejs.github.io/), and [Vite](https://vite.dev/). It runs entirely in the browser—there is no backend or user data collection.
 
 ![Simple Metronome interface](public/images/simple-metronome-screenshot.png)
