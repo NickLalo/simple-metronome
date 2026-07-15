@@ -18,6 +18,7 @@ dist/
 *.log
 coverage/
 tmp/
+secrets/
 
 # Local brainstorming and prototype files
 zz_*

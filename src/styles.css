@@ -1,7 +1,31 @@
+@font-face {
+  font-family: Selawik;
+  src: url("./assets/fonts/selawik-regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Selawik;
+  src: url("./assets/fonts/selawik-semibold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Selawik;
+  src: url("./assets/fonts/selawik-bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   color: #2a2a3a;
   background: #d8d0c9;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: Selawik, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --background: #d8d0c9;
@@ -13,7 +37,7 @@
   --on-accent: #fff;
   --blue: #5994c5;
   --orange: #d9783e;
-  --focus: #6b42c1;
+  --focus: var(--ink);
   --input-highlight: var(--ink);
   --panel-border: clamp(0.28rem, 0.7vw, 0.45rem);
   --radius: 1rem;
@@ -30,7 +54,7 @@ html {
 }
 
 body {
-  min-width: 20rem;
+  min-width: 18rem;
   min-height: 100vh;
   margin: 0;
   background:
@@ -189,19 +213,6 @@ button {
   transform: translateY(0.22rem);
 }
 
-.tap-button.is-tapped {
-  animation: tap-feedback 160ms ease-out;
-}
-
-@keyframes tap-feedback {
-  35% {
-    color: var(--background);
-    background: var(--ink);
-    box-shadow: 0 0 0 var(--ink);
-    transform: translateY(0.22rem);
-  }
-}
-
 .tempo-display {
   grid-area: 1 / 2 / 3 / 3;
   position: relative;
@@ -210,17 +221,20 @@ button {
   align-items: center;
   justify-content: center;
   min-width: 0;
+  container-type: inline-size;
 }
 
 .tempo-display input {
   width: 100%;
   min-width: 0;
   padding: 0;
-  border: 0.25rem solid transparent;
+  border: 0;
   border-radius: 0.7rem;
   outline: none;
   background: transparent;
-  font-size: clamp(3.8rem, 10vw, 6rem);
+  box-shadow: inset 0 0 0 0.25rem transparent;
+  font-size: clamp(3.25rem, 7vw, 5.5rem);
+  font-size: clamp(3.25rem, 49cqi, 5.5rem);
   font-weight: 700;
   letter-spacing: -0.075em;
   line-height: 0.94;
@@ -228,12 +242,12 @@ button {
 }
 
 .tempo-display input:hover {
-  border-color: rgb(42 42 58 / 28%);
+  box-shadow: inset 0 0 0 0.25rem rgb(42 42 58 / 28%);
 }
 
 .tempo-display input:focus {
-  border-color: var(--input-highlight);
   background: var(--surface);
+  box-shadow: inset 0 0 0 0.25rem var(--input-highlight);
 }
 
 .tempo-display > span:not(.sr-only) {
@@ -276,6 +290,7 @@ button {
   appearance: none;
   background: var(--background);
   box-shadow: 0 0.1rem 0 rgb(42 42 58 / 35%);
+  transition: background-color 100ms ease, transform 120ms ease;
 }
 
 .range-control input[type="range"]::-moz-range-thumb {
@@ -285,6 +300,23 @@ button {
   border-radius: 50%;
   background: var(--background);
   box-shadow: 0 0.1rem 0 rgb(42 42 58 / 35%);
+  transition: background-color 100ms ease, transform 120ms ease;
+}
+
+.range-control:hover input[type="range"]::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+
+.range-control:hover input[type="range"]::-moz-range-thumb {
+  transform: scale(1.2);
+}
+
+.range-control input[type="range"]:active::-webkit-slider-thumb {
+  background: var(--ink);
+}
+
+.range-control input[type="range"]:active::-moz-range-thumb {
+  background: var(--ink);
 }
 
 .primary-actions {
@@ -346,14 +378,14 @@ button {
   bottom: calc(100% + 0.75rem);
   left: 50%;
   width: min(18rem, calc(100vw - 2rem));
-  padding: 0.7rem 2.8rem 0.7rem 0.8rem;
+  padding: 0.7rem 3.35rem 0.7rem 0.8rem;
   border: 0.16rem solid var(--ink);
   border-radius: 0.55rem;
   color: var(--on-accent);
   background: var(--ink);
   box-shadow: 0 0.45rem 1rem rgb(42 42 58 / 24%);
   font-size: 0.78rem;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.4;
   opacity: 0;
   pointer-events: none;
@@ -361,45 +393,36 @@ button {
   transition: opacity 120ms ease, transform 120ms ease;
 }
 
-.practice-tooltip-timer {
+.practice-tooltip-beats {
   position: absolute;
   top: 0.55rem;
-  right: 0.6rem;
-  width: 1.6rem;
-  height: 1.6rem;
+  right: 0.55rem;
+  width: 2.2rem;
+  height: 2.2rem;
   opacity: 0;
-  transform: rotate(-90deg);
   transition: opacity 120ms ease;
 }
 
-.practice-tooltip-timer circle {
-  fill: none;
-  stroke-width: 2.4;
-}
-
-.practice-tooltip-timer-track {
-  stroke: rgb(216 208 201 / 28%);
-}
-
-.practice-tooltip-timer-progress {
-  stroke: var(--background);
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  stroke-linecap: round;
-}
-
-.tooltip-trigger.is-counting .practice-tooltip-timer {
+.tooltip-trigger.is-counting .practice-tooltip-beats {
   opacity: 1;
 }
 
-.tooltip-trigger.is-counting .practice-tooltip-timer-progress {
-  animation: practice-tooltip-countdown 5s linear forwards;
+.practice-tooltip-beat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 50%;
+  background: var(--background);
+  opacity: 0.9;
+  transform: translate(-50%, -50%) rotate(calc(var(--dot-index) * 30deg)) translateY(-0.86rem) scale(1);
+  transition: opacity 100ms ease, transform 100ms ease;
 }
 
-@keyframes practice-tooltip-countdown {
-  to {
-    stroke-dashoffset: 1;
-  }
+.practice-tooltip-beat.is-spent {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(calc(var(--dot-index) * 30deg)) translateY(-0.86rem) scale(0.2);
 }
 
 .practice-tooltip::after {
@@ -453,12 +476,70 @@ button {
 input[type="number"] {
   width: 4.6rem;
   min-height: 2.8rem;
-  padding: 0.25rem 0.35rem;
+  padding: 0.25rem 1.15rem 0.25rem 0.25rem;
   border: 0.18rem solid var(--ink);
   border-radius: 0.45rem;
+  appearance: textfield;
   background: var(--background);
   font-weight: 700;
   text-align: center;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.number-stepper {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: fit-content;
+}
+
+.number-stepper-controls {
+  position: absolute;
+  top: 0.22rem;
+  right: 0.18rem;
+  bottom: 0.22rem;
+  display: grid;
+  width: 0.95rem;
+  grid-template-rows: 1fr 1fr;
+  overflow: hidden;
+  border-radius: 0.18rem;
+}
+
+.number-step-button {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.12rem;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  place-items: center;
+}
+
+.number-step-button:hover {
+  background: rgb(42 42 58 / 12%);
+}
+
+.number-step-button::before {
+  width: 0.5rem;
+  height: 0.34rem;
+  background: var(--ink);
+  content: "";
+}
+
+.number-step-button.step-up::before {
+  clip-path: polygon(50% 10%, 100% 90%, 0 90%);
+}
+
+.number-step-button.step-down::before {
+  clip-path: polygon(0 10%, 100% 10%, 50% 90%);
 }
 
 .input-with-shortcut,
@@ -506,6 +587,7 @@ input[type="number"] {
 
 .target-settings {
   display: grid;
+  min-width: 0;
   gap: 0.7rem;
   margin: 0.9rem 0;
   padding: 0.8rem;
@@ -518,7 +600,7 @@ input[type="number"] {
   opacity: 0.45;
 }
 
-.target-settings > label,
+.target-range-row,
 .target-step-row > label {
   display: flex;
   align-items: center;
@@ -526,6 +608,56 @@ input[type="number"] {
   gap: 0.7rem;
   font-size: 0.95rem;
   font-weight: 700;
+}
+
+.target-range-label {
+  flex: 0 0 auto;
+}
+
+.target-range-controls {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.38rem;
+}
+
+.target-range-controls input {
+  width: 4.25rem;
+}
+
+.target-progress {
+  display: flex;
+  min-width: 3.2rem;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.14rem, 0.6vw, 0.27rem);
+}
+
+.target-progress-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  flex: 0 0 auto;
+  border: 0.1rem solid var(--ink);
+  border-radius: 50%;
+  opacity: 0.38;
+  transition: background-color 120ms ease, opacity 120ms ease, transform 120ms ease;
+}
+
+.target-progress-dot.is-filled {
+  background: var(--ink);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.target-progress-arrow {
+  width: 0;
+  height: 0;
+  flex: 0 0 auto;
+  border-top: 0.34rem solid transparent;
+  border-bottom: 0.34rem solid transparent;
+  border-left: 0.52rem solid var(--ink);
 }
 
 .target-step-row {
@@ -626,7 +758,7 @@ button .shortcut {
   margin-top: 0.35rem;
   color: var(--muted);
   font-size: 0.73rem;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .status {
@@ -635,6 +767,50 @@ button .shortcut {
   color: var(--muted);
   font-size: 0.85rem;
   text-align: center;
+}
+
+.audio-error-dialog {
+  width: min(calc(100% - 2rem), 28rem);
+  padding: 0;
+  border: 0.3rem solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1.1rem 2.8rem rgb(42 42 58 / 25%);
+}
+
+.audio-error-dialog::backdrop {
+  background: rgb(42 42 58 / 48%);
+}
+
+.audio-error-content {
+  padding: 1.5rem;
+}
+
+.audio-error-content h2,
+.audio-error-content p {
+  margin-top: 0;
+}
+
+.audio-error-content p {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.audio-error-content button {
+  min-width: 7rem;
+  padding: 0.65rem 1rem;
+  border: 0.2rem solid var(--ink);
+  border-radius: 0.55rem;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.audio-error-content button:hover {
+  background: transparent;
+  color: var(--ink);
 }
 
 noscript {
@@ -724,6 +900,16 @@ input[type="number"]::selection {
     grid-template-columns: 1fr;
   }
 
+  .target-range-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .target-range-controls {
+    width: 100%;
+  }
+
   .shortcut-guide dl {
     grid-template-columns: 1fr 1fr;
   }
@@ -739,7 +925,4 @@ input[type="number"]::selection {
     transition-duration: 0.01ms !important;
   }
 
-  .practice-tooltip-timer-progress {
-    animation: none !important;
-  }
 }

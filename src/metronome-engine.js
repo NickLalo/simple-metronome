@@ -9,6 +9,7 @@ import {
   start as startAudio,
 } from "tone";
 import clickUrl from "./assets/metronome-click.mp3?url";
+import { waitForAudioLoad } from "./audio-load.js";
 import { configureAudioSessionForPlayback } from "./audio-session.js";
 import { TempoRamp, clampInteger } from "./tempo.js";
 
@@ -71,7 +72,13 @@ export class MetronomeEngine {
     }).toDestination();
     this.#applyGain();
 
-    await loaded();
+    try {
+      await waitForAudioLoad(loaded());
+    } catch (error) {
+      this.#sampler.dispose();
+      this.#sampler = null;
+      throw error;
+    }
 
     this.#loop = new Loop((time) => this.#tick(time), "4n").start(0);
     this.transport.bpm.value = this.tempo;
@@ -149,8 +156,13 @@ export class MetronomeEngine {
     return this.tempo;
   }
 
+  setStartingTempo(value) {
+    this.startingTempo = clampInteger(value, 40, 240, this.startingTempo);
+    return this.startingTempo;
+  }
+
   setBeatsPerBar(value) {
-    this.beatsPerBar = clampInteger(value, 1, 15, this.beatsPerBar);
+    this.beatsPerBar = clampInteger(value, 1, 17, this.beatsPerBar);
     this.#beatIndex = 0;
     return this.beatsPerBar;
   }
@@ -168,7 +180,7 @@ export class MetronomeEngine {
   configureTarget({ enabled, target, step, barsPerChange }) {
     this.#ramp.configure({
       enabled: Boolean(enabled),
-      target: clampInteger(target, this.tempo, 240, this.tempo),
+      target: clampInteger(target, 40, 240, this.tempo),
       step: clampInteger(step, 1, 30, 4),
       barsPerChange: clampInteger(barsPerChange, 1, 16, 2),
     });

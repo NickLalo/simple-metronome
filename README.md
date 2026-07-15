@@ -2,13 +2,13 @@
 
 A focused browser metronome for music practice. It includes tap tempo, configurable accents and time signatures, keyboard control, and a target-tempo mode that gradually increases the pace as you practice.
 
+The app is built with vanilla JavaScript, [Tone.js](https://tonejs.github.io/), and [Vite](https://vite.dev/). It runs entirely in the browser—there is no backend or user data collection.
+
 <p align="center">
   <a href="https://nicklalo.github.io/simple-metronome/"><strong>Explore the simple metronome in your browser →</strong></a>
 </p>
 
-The app is built with vanilla JavaScript, [Tone.js](https://tonejs.github.io/), and [Vite](https://vite.dev/). It runs entirely in the browser—there is no backend or user data collection.
-
-![Simple Metronome interface](public/images/simple-metronome-screenshot.png)
+![Simple Metronome demonstration](public/images/simple-metronome-demo.gif)
 
 ## Quick start
 
@@ -35,7 +35,7 @@ You can combine these with other Vite options, for example `./run.sh -n --host 0
 - Accurate browser-audio scheduling with Tone.js
 - Tempo range from 40–240 BPM
 - Tap tempo with smoothing across recent taps
-- 1–15 beats per bar with an optional first-beat accent
+- 1–17 beats per bar with an optional first-beat accent
 - Target-tempo mode with configurable step size and bar interval
 - Practice mode that starts at 80 BPM and climbs to 160 BPM
 - Random-tempo practice tool
@@ -100,4 +100,4 @@ Keyboard shortcuts pause while a form control is focused. Press <kbd>Escape</kbd
 
 Target-tempo mode increases the tempo after the configured number of completed bars until it reaches the target. The starting tempo is restored when playback stops, making it easy to repeat the same practice run.
 
-The default configuration increases the tempo by 4 BPM every 2 bars until it reaches 144 BPM.
+The default configuration starts at 80 BPM and increases the tempo by 3 BPM every 4 bars until it reaches 160 BPM.

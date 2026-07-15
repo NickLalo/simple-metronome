@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="app-loading">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,28 @@
       content="A focused browser metronome with tap tempo, accents, keyboard shortcuts, and progressive practice modes."
     />
     <meta name="theme-color" content="#d8d0c9" />
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+    <style>
+      html {
+        background: #d8d0c9;
+      }
+
+      html.app-loading body {
+        visibility: hidden;
+      }
+    </style>
+    <script>
+      window.setTimeout(() => document.documentElement.classList.remove('app-loading'), 2000);
+    </script>
+    <noscript>
+      <style>
+        html.app-loading body {
+          visibility: visible;
+        }
+      </style>
+    </noscript>
+    <link rel="stylesheet" href="/src/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="./favicon-light.svg" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="./images/metronome-icon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
@@ -87,12 +108,8 @@
                 Practice mode <kbd class="shortcut">P</kbd>
               </button>
               <div id="practice-tooltip" class="practice-tooltip" role="tooltip">
-                <svg class="practice-tooltip-timer" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle class="practice-tooltip-timer-track" cx="12" cy="12" r="9" pathLength="1" />
-                  <circle class="practice-tooltip-timer-progress" cx="12" cy="12" r="9" pathLength="1" />
-                </svg>
-                Starts at 80 BPM with the accent off, then adds 3 BPM every 4 bars until 160. Stopping
-                resets to 80 BPM.
+                <span id="practice-tooltip-text"></span>
+                <span id="practice-tooltip-beats" class="practice-tooltip-beats" aria-hidden="true"></span>
               </div>
             </div>
           </div>
@@ -104,8 +121,8 @@
           <div class="setting-row">
             <label for="beats-input">Beats per bar</label>
             <span class="input-with-shortcut">
-              <input id="beats-input" type="number" min="1" max="15" value="4" inputmode="numeric" />
               <kbd class="shortcut">B</kbd>
+              <input id="beats-input" type="number" min="1" max="17" value="4" inputmode="numeric" />
             </span>
           </div>
 
@@ -136,20 +153,33 @@
           <fieldset id="target-settings" class="target-settings" disabled>
             <legend class="sr-only">Target tempo settings</legend>
 
-            <label for="target-input">
-              <span>Target BPM</span>
-              <input id="target-input" type="number" min="40" max="240" value="144" inputmode="numeric" />
-            </label>
+            <div class="target-range-row">
+              <span class="target-range-label">Target BPM</span>
+              <div class="target-range-controls">
+                <label class="sr-only" for="start-input">Starting BPM</label>
+                <input id="start-input" type="number" min="40" max="240" value="80" inputmode="numeric" />
+                <span id="target-progress" class="target-progress" aria-hidden="true">
+                  <span class="target-progress-dot"></span>
+                  <span class="target-progress-dot"></span>
+                  <span class="target-progress-dot"></span>
+                  <span class="target-progress-dot"></span>
+                  <span class="target-progress-dot"></span>
+                  <span class="target-progress-arrow"></span>
+                </span>
+                <label class="sr-only" for="target-input">Target BPM</label>
+                <input id="target-input" type="number" min="40" max="240" value="160" inputmode="numeric" />
+              </div>
+            </div>
 
             <div class="target-step-row">
               <label for="increase-input">
                 <span>Increase by</span>
-                <input id="increase-input" type="number" min="1" max="30" value="4" inputmode="numeric" />
+                <input id="increase-input" type="number" min="1" max="30" value="3" inputmode="numeric" />
               </label>
               <label for="bars-input">
                 <span>Every</span>
                 <span class="unit-input">
-                  <input id="bars-input" type="number" min="1" max="16" value="2" inputmode="numeric" />
+                  <input id="bars-input" type="number" min="1" max="16" value="4" inputmode="numeric" />
                   <span>bars</span>
                 </span>
               </label>
@@ -160,9 +190,9 @@
             <div class="setting-row gain-label-row">
               <label for="gain-input">Gain</label>
               <span class="input-with-unit">
+                <kbd class="shortcut">G</kbd>
                 <input id="gain-input" type="number" min="-36" max="18" value="0" inputmode="numeric" />
                 <span>dB</span>
-                <kbd class="shortcut">G</kbd>
               </span>
             </div>
             <label class="range-control" for="gain-slider">
@@ -188,6 +218,19 @@
           </dl>
         </section>
       </fieldset>
+
+      <dialog
+        id="audio-error-dialog"
+        class="audio-error-dialog"
+        aria-labelledby="audio-error-title"
+        aria-describedby="audio-error-message"
+      >
+        <div class="audio-error-content">
+          <h2 id="audio-error-title">Audio couldn't start</h2>
+          <p id="audio-error-message"></p>
+          <button id="audio-error-close" type="button">Dismiss</button>
+        </div>
+      </dialog>
 
       <p id="app-status" class="status" role="status" aria-live="polite">Ready</p>
       <noscript>This metronome needs JavaScript enabled to run.</noscript>
