@@ -80,4 +80,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           mapfile -d '' files < <(find artifacts -type f -print0)
-          gh release create "$GITHUB_REF_NAME" "${files[@]}" --generate-notes --title "Simple Metronome $GITHUB_REF_NAME"
+          gh release create "$GITHUB_REF_NAME" "${files[@]}" --repo "$GITHUB_REPOSITORY" --generate-notes --title "Simple Metronome $GITHUB_REF_NAME"
