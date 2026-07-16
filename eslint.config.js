@@ -11,7 +11,30 @@ const browserGlobals = {
 
 export default [
   {
-    ignores: ["dist/**", "node_modules/**"],
+    ignores: ["dist/**", "node_modules/**", "out/**"],
+  },
+  {
+    files: ["electron/**/*.cjs", "forge.config.cjs"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "commonjs",
+      globals: {
+        __dirname: "readonly",
+        console: "readonly",
+        decodeURIComponent: "readonly",
+        module: "readonly",
+        process: "readonly",
+        require: "readonly",
+        Response: "readonly",
+        URL: "readonly"
+      }
+    },
+    rules: {
+      eqeqeq: ["error", "always"],
+      "no-undef": "error",
+      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "prefer-const": "error"
+    }
   },
   {
     files: ["src/**/*.js"],

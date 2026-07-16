@@ -177,14 +177,14 @@ function renderPracticeTooltipBeatDots() {
 
 function startPracticeTooltipCountdown() {
   practiceTooltipBeatsRemaining = PRACTICE_TOOLTIP_BEAT_COUNT;
-  elements.practiceTooltipTrigger.classList.remove("is-counting", "is-dismissed");
-  elements.practiceTooltipTrigger.classList.add("is-counting");
+  elements.practiceTooltipTrigger.classList.remove("is-dismissed");
+  elements.practiceTooltipTrigger.classList.add("is-counting", "is-pinned");
   renderPracticeTooltipBeatDots();
 }
 
 function dismissPracticeTooltip() {
   practiceTooltipBeatsRemaining = 0;
-  elements.practiceTooltipTrigger.classList.remove("is-counting");
+  elements.practiceTooltipTrigger.classList.remove("is-counting", "is-pinned");
   elements.practiceTooltipTrigger.classList.add("is-dismissed");
   elements.practiceButton.blur();
 }
@@ -203,10 +203,6 @@ function consumePracticeTooltipBeat() {
 
 function restorePracticeTooltip() {
   elements.practiceTooltipTrigger.classList.remove("is-dismissed");
-  if (!elements.practiceTooltipTrigger.classList.contains("is-counting")) {
-    practiceTooltipBeatsRemaining = PRACTICE_TOOLTIP_BEAT_COUNT;
-    renderPracticeTooltipBeatDots();
-  }
 }
 
 function renderBeatIndicator(beatsPerBar) {
@@ -543,7 +539,15 @@ addRangeWheelControl(elements.gainSlider, (value) => {
 });
 
 document.addEventListener("click", (event) => {
-  if (event.detail === 0 || !(event.target instanceof HTMLElement)) {
+  if (!(event.target instanceof HTMLElement)) {
+    return;
+  }
+
+  if (!elements.practiceTooltipTrigger.contains(event.target)) {
+    dismissPracticeTooltip();
+  }
+
+  if (event.detail === 0) {
     return;
   }
 
@@ -558,6 +562,12 @@ document.addEventListener("keydown", (event) => {
   const target = event.target;
   const isInput = target instanceof HTMLElement && target.matches("input");
   const isButton = target instanceof HTMLElement && target.matches("button");
+  if (event.key === "Escape" && elements.practiceTooltipTrigger.classList.contains("is-pinned")) {
+    event.preventDefault();
+    dismissPracticeTooltip();
+    return;
+  }
+
   if (isInput || isButton) {
     if (event.key === "Escape") {
       target.blur();

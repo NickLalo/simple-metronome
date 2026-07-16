@@ -2,10 +2,12 @@
 
 A focused browser metronome for music practice. It includes tap tempo, configurable accents and time signatures, keyboard control, and a target-tempo mode that gradually increases the pace as you practice.
 
-The app is built with vanilla JavaScript, [Tone.js](https://tonejs.github.io/), and [Vite](https://vite.dev/). It runs entirely in the browser—there is no backend or user data collection.
+The app is built with vanilla JavaScript, [Tone.js](https://tonejs.github.io/), and [Vite](https://vite.dev/). It runs entirely on your device—there is no backend or user data collection.
 
 <p align="center">
   <a href="https://nicklalo.github.io/simple-metronome/"><strong>Explore the simple metronome in your browser →</strong></a>
+  <br /><br />
+  <a href="https://github.com/NickLalo/simple-metronome/releases/latest"><strong>Download the desktop app →</strong></a>
 </p>
 
 ![Simple Metronome demonstration](public/images/simple-metronome-demo.gif)
@@ -29,6 +31,28 @@ By default, `./run.sh` opens the app in your browser and reloads it when files c
 ```
 
 You can combine these with other Vite options, for example `./run.sh -n --host 0.0.0.0`.
+
+## Desktop app
+
+The Electron version uses the same metronome interface and works offline. Download the latest Windows, macOS, or Linux package from [GitHub Releases](https://github.com/NickLalo/simple-metronome/releases/latest).
+
+To build it locally and open it as a standalone desktop window:
+
+```bash
+npm run desktop:start
+```
+
+To create an installer and a portable ZIP for your current operating system:
+
+```bash
+npm run desktop:make
+```
+
+Packages are written to `out/make/`. The **Desktop builds** workflow can build Windows x64, macOS Intel and Apple Silicon, and Linux x64 versions from GitHub's Actions tab. Pushing a version tag such as `v2.0.0` builds the same packages and attaches them to a GitHub release.
+
+On Linux and macOS, creating the portable archive uses the standard `zip` command. If it is not installed, the native DEB or DMG build still completes and the ZIP is skipped.
+
+These builds are currently unsigned, so Windows SmartScreen or macOS Gatekeeper may show a warning. Removing that warning requires platform-specific code-signing certificates.
 
 ## Features
 
@@ -71,6 +95,9 @@ That command runs ESLint, the unit tests, and a production build.
 | `npm run dev` | Start the local development server without opening a browser |
 | `npm run build` | Create the production site in `dist/` |
 | `npm run preview` | Preview the production build locally |
+| `npm run desktop:start` | Build and open the standalone desktop app |
+| `npm run desktop:package` | Create an unpacked desktop application in `out/` |
+| `npm run desktop:make` | Create the native installer and portable ZIP for the current OS |
 | `npm run lint` | Check JavaScript quality rules |
 | `npm test` | Run the unit tests |
 | `npm run check` | Run linting, tests, and a production build |

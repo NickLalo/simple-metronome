@@ -439,7 +439,8 @@ button {
 }
 
 .tooltip-trigger:hover .practice-tooltip,
-.tooltip-trigger:focus-within .practice-tooltip {
+.tooltip-trigger:focus-within .practice-tooltip,
+.tooltip-trigger.is-pinned .practice-tooltip {
   opacity: 1;
   transform: translate(-50%, 0);
 }
@@ -759,14 +760,6 @@ button .shortcut {
   color: var(--muted);
   font-size: 0.73rem;
   font-weight: 600;
-}
-
-.status {
-  min-height: 1.5rem;
-  margin: 0.7rem 0 0;
-  color: var(--muted);
-  font-size: 0.85rem;
-  text-align: center;
 }
 
 .audio-error-dialog {

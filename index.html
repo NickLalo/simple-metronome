@@ -7,6 +7,10 @@
       name="description"
       content="A focused browser metronome with tap tempo, accents, keyboard shortcuts, and progressive practice modes."
     />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'"
+    />
     <meta name="theme-color" content="#d8d0c9" />
     <style>
       html {
@@ -17,9 +21,7 @@
         visibility: hidden;
       }
     </style>
-    <script>
-      window.setTimeout(() => document.documentElement.classList.remove('app-loading'), 2000);
-    </script>
+    <script type="module" src="/src/bootstrap.js"></script>
     <noscript>
       <style>
         html.app-loading body {
@@ -232,19 +234,10 @@
         </div>
       </dialog>
 
-      <p id="app-status" class="status" role="status" aria-live="polite">Ready</p>
+      <p id="app-status" class="sr-only" role="status" aria-live="polite">Ready</p>
       <noscript>This metronome needs JavaScript enabled to run.</noscript>
     </main>
 
     <script type="module" src="/src/main.js"></script>
-    <script>
-      if (window.location.hostname === 'nicklalo.github.io') {
-        const analytics = document.createElement('script');
-        analytics.defer = true;
-        analytics.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-        analytics.dataset.cfBeacon = JSON.stringify({ token: '1cca41536fb649218b67d2b5127fe973' });
-        document.head.append(analytics);
-      }
-    </script>
   </body>
 </html>
