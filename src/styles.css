@@ -872,9 +872,16 @@ input[type="number"]::selection {
 }
 
 @media (max-width: 30rem) {
+  body:has(.settings-panel[hidden]) {
+    height: 100svh;
+    min-height: 100svh;
+    overflow-y: hidden;
+  }
+
   .page-shell {
     width: min(100% - 0.5rem, 30rem);
     padding-top: max(0.45rem, env(safe-area-inset-top));
+    padding-bottom: 0.5rem;
   }
 
   .metronome {
@@ -886,7 +893,7 @@ input[type="number"]::selection {
   }
 
   .metronome:has(.settings-panel[hidden]) {
-    height: calc(100svh - max(1rem, env(safe-area-inset-top)) - 0.75rem);
+    height: calc(100svh - max(1rem, env(safe-area-inset-top)) - 0.5rem);
   }
 
   .tempo-panel,
