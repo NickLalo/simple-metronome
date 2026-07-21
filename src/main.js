@@ -40,6 +40,8 @@ const elements = {
   randomButton: byId("random-button"),
   shortcutGuide: byId("shortcut-guide"),
   shortcutsToggle: byId("shortcuts-toggle"),
+  settingsDisclosure: byId("settings-disclosure"),
+  settingsPanel: byId("settings-panel"),
   startInput: byId("start-input"),
   startButton: byId("start-button"),
   startButtonLabel: document.querySelector("#start-button .button-label"),
@@ -54,6 +56,7 @@ const elements = {
 };
 
 const tapTempo = new TapTempo({ minimum: TEMPO_MIN, maximum: TEMPO_MAX });
+const mobileLayout = window.matchMedia("(max-width: 30rem)");
 let practiceTooltipBeatsRemaining = 0;
 let tempoEntryTimeoutId = null;
 const engine = new MetronomeEngine({
@@ -95,6 +98,21 @@ function closeAudioError() {
   } else {
     elements.audioErrorDialog.removeAttribute("open");
   }
+}
+
+function setSettingsExpanded(isExpanded) {
+  elements.settingsDisclosure.setAttribute("aria-expanded", String(isExpanded));
+  elements.settingsPanel.hidden = !isExpanded;
+}
+
+function syncSettingsDisclosure(event) {
+  setSettingsExpanded(!event.matches);
+}
+
+function toggleSettingsDisclosure() {
+  const isExpanded = elements.settingsDisclosure.getAttribute("aria-expanded") === "true";
+  setSettingsExpanded(!isExpanded);
+  setStatus(isExpanded ? "More controls collapsed" : "More controls expanded");
 }
 
 function setSliderFill(input) {
@@ -421,6 +439,7 @@ elements.audioErrorClose.addEventListener("click", closeAudioError);
 elements.tapButton.addEventListener("click", recordTap);
 elements.randomButton.addEventListener("click", setRandomTempo);
 elements.practiceButton.addEventListener("click", startPracticeMode);
+elements.settingsDisclosure.addEventListener("click", toggleSettingsDisclosure);
 elements.practiceTooltipTrigger.addEventListener("pointerenter", restorePracticeTooltip);
 elements.practiceTooltipTrigger.addEventListener("focusin", restorePracticeTooltip);
 
@@ -621,7 +640,10 @@ window.addEventListener("beforeunload", () => {
   engine.dispose();
 });
 
+mobileLayout.addEventListener("change", syncSettingsDisclosure);
+
 createPracticeTooltipBeatDots();
+syncSettingsDisclosure(mobileLayout);
 renderTempo(engine.tempo);
 renderBeatIndicator(engine.beatsPerBar);
 setSliderFill(elements.gainSlider);

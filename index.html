@@ -117,7 +117,21 @@
           </div>
         </section>
 
-        <section class="settings-panel" aria-labelledby="settings-heading">
+        <button
+          id="settings-disclosure"
+          class="settings-disclosure"
+          type="button"
+          aria-expanded="true"
+          aria-controls="settings-panel"
+        >
+          <span class="settings-disclosure-copy">
+            <span>More controls</span>
+            <span>Meter, accent, target &amp; gain</span>
+          </span>
+          <span class="settings-disclosure-icon" aria-hidden="true"></span>
+        </button>
+
+        <section id="settings-panel" class="settings-panel" aria-labelledby="settings-heading">
           <h2 id="settings-heading" class="sr-only">Metronome settings</h2>
 
           <div class="setting-row">
