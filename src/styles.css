@@ -878,10 +878,15 @@ input[type="number"]::selection {
   }
 
   .metronome {
+    grid-template-rows: minmax(0, 1fr) auto;
     gap: 0.7rem;
     padding: 0.55rem;
     border-width: 0.38rem;
     border-radius: 1rem;
+  }
+
+  .metronome:has(.settings-panel[hidden]) {
+    height: calc(100svh - max(1rem, env(safe-area-inset-top)) - 0.75rem);
   }
 
   .tempo-panel,
